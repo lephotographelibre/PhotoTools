@@ -20,11 +20,6 @@ filename = filename[:index]
 output_image = "out/" + filename + "_slice"
 print("Output file = " + output_image)
 
-if slice_orientation == "V":
-    print("Slice orientation = " + "vertical")
-else:
-    print("Slice orientation= " + "Horizontal")
-
 # Open Input File
 im = Image.open(input_image)
 print(im.format, im.size, im.mode)
@@ -70,6 +65,17 @@ print("New Image size = ", "Width = ", width, "Height = ", height)
 # Syntax: PIL.Image.crop(box = None)
 # Parameters:
 # box – a 4-tuple defining the left, upper, right, and lower pixel coordinate.
+#      the first two numbers define the top-left coordinates of the outtake (x,y),
+#      while the last two define the right-bottom coordinates
+#
+# (top,left)
+#	+-----------------------+
+#	|                       |
+#	|                       |
+#	|                       |
+#	+-----------------------+
+#                                (right, lower)
+#
 # Return type: Image (Returns a rectangular region as (left, upper, right, lower)-tuple).
 # Return: An Image object.
 
@@ -90,18 +96,32 @@ box = (left, top, right, bottom)
 # save crop image
 # im1.save(output_image, 'jpeg')
 
-# Loop for each slice
-r = range(nb_slices)
-for i in r:
-    left = i * int(width / nb_slices)
-    top = 0
-    right = (i + 1) * int(width / nb_slices) - 1
-    bottom = height
+# Loop for each slice (H or V)
 
-    box = (left, top, right, bottom)
-    print(box)
-    im1 = im.crop(box)
-    im1.save(output_image + "_" + str(i) + ".jpg", 'jpeg')
-    print("-- Slice created : " + output_image + "_" + str(i) + ".jpg")
+if slice_orientation == "V":
+    print("Slice orientation = " + "vertical")
+    for i in range(nb_slices):
+        left = i * int(width / nb_slices)
+        top = 0
+        right = (i + 1) * int(width / nb_slices)
+        bottom = height
 
+        box = (left, top, right, bottom)
+        print(box)
+        im1 = im.crop(box)
+        im1.save(output_image + "_" + str(i) + ".jpg", 'jpeg')
+        print("-- Slice created : " + output_image + "_" + str(i) + ".jpg")
+else:
+    print("Slice orientation= " + "Horizontal")
+    for i in range(nb_slices):
+        left = 0
+        top = i * int(height / nb_slices)
+        right = width
+        bottom = (i + 1) * int(height / nb_slices)
+
+        box = (left, top, right, bottom)
+        print(box)
+        im1 = im.crop(box)
+        im1.save(output_image + "_" + str(i) + ".jpg", 'jpeg')
+        print("-- Slice created : " + output_image + "_" + str(i) + ".jpg")
 print("End ...")
