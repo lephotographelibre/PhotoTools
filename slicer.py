@@ -5,9 +5,9 @@ from PIL import Image
 
 # Input Parameters
 max_pixel = 2000
-nb_slices = 3
+nb_slices = 5
 # TODO crop = "3x5"
-slice_orientation = "V"
+slice_orientation = "H"
 input_image = "images/vertical01.jpg"
 
 # Prepare Data - Variables
@@ -122,6 +122,8 @@ else:
         box = (left, top, right, bottom)
         print(box)
         im1 = im.crop(box)
-        im1.save(output_image + "_" + str(i) + ".jpg", 'jpeg')
-        print("-- Slice created : " + output_image + "_" + str(i) + ".jpg")
+        im1.save(output_image + "_" + "{:02d}".format(i) + ".jpg", 'jpeg')
+#        print("-- Slice created : " + output_image + "_" + str(i) + ".jpg")
+        print("-- Slice created : " + output_image + "_" + "{:02d}".format(i) + ".jpg")
+
 print("End ...")
