@@ -73,6 +73,9 @@ def render_color_platte(colors):
         canvas.rectangle([(x, y), (x + size - 1, y + size - 1)], fill=color[0])
     return result
 
+# TODO render_color_platte(colors) with color list and percentage
+# Create a color list image - 3 columns (square of color, RGB values, Percetage)
+
 
 def overlay_palette(img, color_palette):
     nrow = 2
