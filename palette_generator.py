@@ -4,7 +4,7 @@
 
 import math
 import PIL
-import extcolors
+import extcolors  # From: https://github.com/CairX/extract-colors-py
 import numpy as np
 import urllib.request
 import matplotlib.pyplot as plt
@@ -42,8 +42,22 @@ def extract_colors(img):
     tolerance = 32
     limit = 24
     colors, pixel_count = extcolors.extract_from_image(img, tolerance, limit)
-    print(colors)
+    #    print(colors)
+    print_result(colors, pixel_count)
     return colors
+
+
+# from the GIT source https://github.com/CairX/extract-colors-py/blob/master/extcolors/command.py
+def print_result(colors, pixel_count):
+    print("Extracted colors:")
+    color_count = sum([color[1] for color in colors])
+    for color in colors:
+        rgb = str(color[0])
+        count = color[1]
+        percentage = "{:.2f}".format((float(count) / float(color_count)) * 100.0)
+        print(f"{rgb:15}:{percentage:>7}% ({count})")
+
+    print(f"\nPixels in output: {color_count} of {pixel_count}")
 
 
 def render_color_platte(colors):
