@@ -73,8 +73,48 @@ def render_color_platte(colors):
         canvas.rectangle([(x, y), (x + size - 1, y + size - 1)], fill=color[0])
     return result
 
-# TODO render_color_platte(colors) with color list and percentage
-# Create a color list image - 3 columns (square of color, RGB values, Percetage)
+
+def get_font_color(rgb):
+    font_color = "white"
+    # Parse rgb format (134, 237, 255)
+    rgb = rgb[1:-1]
+    rgblist = rgb.split(',')
+    print(rgblist)
+    rgblist = list(map(int, rgblist))
+    # print(rgblist)
+    # print("Red color component= {}".format(rgblist[0]))
+    # print("Green color component= {}".format(rgblist[1]))
+    # print("Blue color component= {}".format(rgblist[2]))
+
+    # Compute font_color
+    OpositeColor = (0.3 * int(rgblist[0])) + (0.59 * int(rgblist[1])) + (0.11 * int(rgblist[1]))
+    # print("OpositeColor = " + str(OpositeColor))
+    if OpositeColor < 128:
+        font_color = "white"
+    else:
+        font_color = "Black"
+    print("Font color = " + font_color)
+    return font_color
+
+    # TODO render_color_platte(colors) with color list and percentage
+    # Create a color Palette with Percentage
+
+
+def render_color_percent(colors, pixel_count):
+    size = 100
+    columns = 3
+    # Palette Size
+    width = int(min(len(colors), columns) * size)
+    height = int((math.floor(len(colors) / columns) + 1) * size)
+    # Palette Image
+    result = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    canvas = ImageDraw.Draw(result)
+    for idx, color in enumerate(colors):
+        x = int((idx % columns) * size)
+        y = int(math.floor(idx / columns) * size)
+        canvas.rectangle([(x, y), (x + size - 1, y + size - 1)], fill=color[0])
+        # TODO Calculate and write % (If color is White - Font is Black, Inf color is Black Font is White)
+    return result
 
 
 def overlay_palette(img, color_palette):
