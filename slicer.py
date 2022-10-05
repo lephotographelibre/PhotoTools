@@ -1,3 +1,9 @@
+# slicer - Slice an image
+# Jean-Marc Digne @ 2022
+# http://lephotographelibre.wordpress.com
+#
+# Usage exemple
+# slicer.py --jpeg-quality 90 --maxsize 2000 --slicenumber 3 --orientation V images/vertical01.jpg
 import ntpath
 import argparse
 import sys
@@ -10,13 +16,11 @@ from PIL import Image
 
 def main():
     # Input Parameters
-
     args = parse_parameters()
     print('-- Input parameters args --', str(args))
 
     if not os.path.isfile(args.inputimage):
         raise FileNotFoundError(args.inputimage)
-        exit()
 
     # Prepare Data - Variables
     print("Input file = " + args.inputimage)
@@ -46,7 +50,7 @@ def main():
     # PIL.Image.LANCZOS (a high-quality downsampling filter). If omitted, or if the image has mode “1” or “P”,
     # it is set PIL.Image.NEAREST.
 
-    # Resize to args.maxsize
+    # Resize original to args.maxsize
     if width > height:
         print(" -- Format Landscape")
         ratio_reduction = width / args.maxsize
@@ -87,23 +91,6 @@ def main():
     # Return type: Image (Returns a rectangular region as (left, upper, right, lower)-tuple).
     # Return: An Image object.
 
-    # Setting the points for cropped image
-    left = 0
-    top = 0
-    right = int(width / args.slicenumber) - 1
-    bottom = height
-
-    box = (left, top, right, bottom)
-
-    # Cropped image of above dimension
-    # (It will not change original image)
-    # im1 = im.crop((left, top, right, bottom))
-    # im1 = im.crop(box)
-    # im1.show()
-
-    # save crop image
-    # im1.save(output_image, 'jpeg')
-
     # Loop for each slice (H or V)
 
     if args.orientation == "V":
@@ -134,16 +121,17 @@ def main():
             print("-- Slice created : " + output_image + "_" + "{:02d}".format(i) + ".jpg")
 
 
+# Collect input parameters
 def parse_parameters():
     parser = argparse.ArgumentParser()
     parser.add_argument('inputimage')
     # parser.add_argument('outputimage')
     # parser.add_argument('-l', '--log-level')
-    parser.add_argument('--jpeg-quality', type=int, default=50)
-    parser.add_argument('--maxsize', type=int, default=2000)
+    parser.add_argument('--jpeg-quality', type=int, default=50)  # Not used
+    parser.add_argument('--maxsize', type=int, default=2000)  # in pixels
     # TODO crop = "3x5"
     parser.add_argument('--slicenumber', type=int, default=5)
-    parser.add_argument('--orientation')
+    parser.add_argument('--orientation')  # String V  or H
     args = parser.parse_args()
     return args
 
