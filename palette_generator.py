@@ -8,6 +8,8 @@ import extcolors  # From: https://github.com/CairX/extract-colors-py
 import numpy as np
 import urllib.request
 import matplotlib.pyplot as plt
+import webcolors
+
 from PIL import Image, ImageDraw
 from matplotlib import gridspec
 
@@ -53,11 +55,26 @@ def print_result(colors, pixel_count):
     color_count = sum([color[1] for color in colors])
     for color in colors:
         rgb = str(color[0])
+        # print(webcolors.normalize_integer_triplet(color[0]))
+        print(get_colour_name(color[0]))
         count = color[1]
         percentage = "{:.2f}".format((float(count) / float(color_count)) * 100.0)
         print(f"{rgb:15}:{percentage:>7}% ({count})")
 
     print(f"\nPixels in output: {color_count} of {pixel_count}")
+
+
+# Get approminate Color Name (CSS21)
+# From: https://stackoverflow.com/questions/9694165/convert-rgb-color-to-english-color-name-like-green-with-python
+def get_colour_name(rgb_triplet):
+    min_colours = {}
+    for key, name in webcolors.CSS21_HEX_TO_NAMES.items():
+        r_c, g_c, b_c = webcolors.hex_to_rgb(key)
+        rd = (r_c - rgb_triplet[0]) ** 2
+        gd = (g_c - rgb_triplet[1]) ** 2
+        bd = (b_c - rgb_triplet[2]) ** 2
+        min_colours[(rd + gd + bd)] = name
+    return min_colours[min(min_colours.keys())]
 
 
 def render_color_platte(colors):
@@ -79,9 +96,7 @@ def get_font_color(rgb):
     # Parse rgb format (134, 237, 255)
     rgb = rgb[1:-1]
     rgblist = rgb.split(',')
-    print(rgblist)
     rgblist = list(map(int, rgblist))
-    # print(rgblist)
     # print("Red color component= {}".format(rgblist[0]))
     # print("Green color component= {}".format(rgblist[1]))
     # print("Blue color component= {}".format(rgblist[2]))
