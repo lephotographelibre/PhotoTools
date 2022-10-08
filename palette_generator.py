@@ -1,7 +1,10 @@
 # pip3 install --upgrade extcolors
 # Building a color palette generator in Python
 # From: https://kylermintah.medium.com/coding-a-color-palette-generator-in-python-inspired-by-procreate-5x-b10df37834ae
-
+#
+# TODO Add Command Line Interface arg for Image URL
+#      Issue #2 https://github.com/lephotographelibre/PhotoTools/issues/2
+#
 import sys
 import math
 import PIL
@@ -10,7 +13,8 @@ import numpy as np
 import urllib.request
 import matplotlib.pyplot as plt
 import webcolors
-
+import argparse
+import os
 
 from PIL import Image, ImageDraw
 from PIL import ImageFont
@@ -20,9 +24,12 @@ from matplotlib import gridspec
 def main():
     # Execution cell
     # We simply need to call our study_image() function and pass in a valid image URL in our final cell.
-    # image_url = 'https://tinyurl.com/unsplash-painted-flowers'
-    #image_url = 'https://lephotographelibre.files.wordpress.com/2018/03/port_de_l_rochelle_1024_logose.jpg'
-    image_url = 'file:///ssdhome/jm/PycharmProjects/PhotoTools/port.jpg'
+    # Input Parameters
+    args = parse_parameters()
+    print('-- Input parameters args --', str(args))
+    # image_url = 'file:///ssdhome/jm/PycharmProjects/PhotoTools/images/port.jpg'
+    # image_url = "https://lephotographelibre.files.wordpress.com/2017/12/mg_9066_01_gimp.jpg?w=1140"
+    image_url = args.inputimage
     study_image(image_url)
 
 
@@ -30,7 +37,11 @@ def main():
 # In our second code cell, we define our top-level function. The study_image() function will orchestrate our process.
 # We will need to define each of the helper functions defined.
 def study_image(image_path):
-    img = fetch_image(image_path)
+    try:
+        img = fetch_image(image_path)
+    except Exception as e:
+        print("*** Exception Image not Found  *** at ", image_path)
+
     # colors = extract_colors(img) # Standard rendering fonction
     # color_palette = render_color_platte(colors) # Standard rendering fonction
     colors, pixel_count = extract_colors_pixelcount(img)
@@ -144,7 +155,8 @@ def render_color_percent(colors, pixel_count):
         # TODO Calculate and write % (If color is White - Font is Black, Inf color is Black Font is White)
         # print("% = " + str(get_color_percentage(colors, color)))
         # print(get_font_color(str(color[0])))
-        canvas.text((x + 10, y + 10), get_color_percentage(colors, color) + " %", fill=get_font_color(str(color[0])), font=font)
+        canvas.text((x + 10, y + 10), get_color_percentage(colors, color) + " %", fill=get_font_color(str(color[0])),
+                    font=font)
     return result
 
 
@@ -167,8 +179,9 @@ def get_font_color(rgb):
     else:
         # font_color = "Black"
         font_color = PIL.ImageColor.getrgb("Black")
-    #print("Font color = " + font_color)
+    # print("Font color = " + font_color)
     return font_color
+
 
 def overlay_palette(img, color_palette):
     nrow = 2
@@ -183,6 +196,14 @@ def overlay_palette(img, color_palette):
     plt.axis('off')
     plt.subplots_adjust(wspace=0, hspace=0, bottom=0)
     plt.show(block=True)
+
+
+# Collect input parameters
+def parse_parameters():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('inputimage')
+    args = parser.parse_args()
+    return args
 
 
 if __name__ == "__main__":
