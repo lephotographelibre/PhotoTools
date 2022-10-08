@@ -21,7 +21,8 @@ def main():
     # Execution cell
     # We simply need to call our study_image() function and pass in a valid image URL in our final cell.
     # image_url = 'https://tinyurl.com/unsplash-painted-flowers'
-    image_url = 'https://lephotographelibre.files.wordpress.com/2018/03/port_de_l_rochelle_1024_logose.jpg'
+    #image_url = 'https://lephotographelibre.files.wordpress.com/2018/03/port_de_l_rochelle_1024_logose.jpg'
+    image_url = 'file:///ssdhome/jm/PycharmProjects/PhotoTools/port.jpg'
     study_image(image_url)
 
 
@@ -78,7 +79,7 @@ def print_result(colors, pixel_count):
     color_count = sum([color[1] for color in colors])
     for color in colors:
         rgb = str(color[0])  # color[0] is the rgb tuples
-        print(get_colour_name(color[0]))
+        # print(get_colour_name(color[0])) # NOT USED CSS Color name not precise enought
         count = color[1]  # color[1] is the number is the color[0] pixel number
         percentage = "{:.2f}".format((float(count) / float(color_count)) * 100.0)
         print(f"{rgb:15}:{percentage:>7}% ({count})")
@@ -120,7 +121,6 @@ def render_color_platte(colors):
         x = int((idx % columns) * size)
         y = int(math.floor(idx / columns) * size)
         canvas.rectangle([(x, y), (x + size - 1, y + size - 1)], fill=color[0])
-
     return result
 
 
@@ -142,8 +142,9 @@ def render_color_percent(colors, pixel_count):
         y = int(math.floor(idx / columns) * size)
         canvas.rectangle([(x, y), (x + size - 1, y + size - 1)], fill=color[0])
         # TODO Calculate and write % (If color is White - Font is Black, Inf color is Black Font is White)
-        print("% = " + str(get_color_percentage(colors, color)))
-        canvas.text((x + 10, y + 10), get_color_percentage(colors, color) + " %", (255, 255, 255), font=font)
+        # print("% = " + str(get_color_percentage(colors, color)))
+        # print(get_font_color(str(color[0])))
+        canvas.text((x + 10, y + 10), get_color_percentage(colors, color) + " %", fill=get_font_color(str(color[0])), font=font)
     return result
 
 
@@ -161,15 +162,13 @@ def get_font_color(rgb):
     OpositeColor = (0.3 * int(rgblist[0])) + (0.59 * int(rgblist[1])) + (0.11 * int(rgblist[1]))
     # print("OpositeColor = " + str(OpositeColor))
     if OpositeColor < 128:
-        font_color = "white"
+        # font_color = "white"
+        font_color = PIL.ImageColor.getrgb("White")
     else:
-        font_color = "Black"
-    print("Font color = " + font_color)
+        # font_color = "Black"
+        font_color = PIL.ImageColor.getrgb("Black")
+    #print("Font color = " + font_color)
     return font_color
-
-    # TODO render_color_platte(colors) with color list and percentage
-    # Create a color Palette with Percentage
-
 
 def overlay_palette(img, color_palette):
     nrow = 2
